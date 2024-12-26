@@ -3,7 +3,6 @@ package garmin
 import (
 	"fmt"
 	"net/url"
-	"strconv"
 )
 
 type ActivityService service
@@ -163,32 +162,6 @@ func (as *ActivityService) Get(id int64) (*Activity, error) {
 
 func (as *ActivityService) Activities(req *ActivitySearch) ([]ListedActivity, error) {
 	return (*ActivityListService)(as).Activities(req)
-}
-
-type activityListOptions struct {
-	Start           int
-	Limit           int
-	Favorites       bool
-	ActivityTypeKey string
-	Search          string
-	ExcludeChildren bool
-}
-
-func (alo *activityListOptions) params() url.Values {
-	v := url.Values{
-		"limit": []string{strconv.FormatInt(int64(alo.Limit), 10)},
-		"start": []string{strconv.FormatInt(int64(alo.Start), 10)},
-	}
-	if alo.Favorites {
-		v["favorite"] = []string{"1"}
-	} else if len(alo.Search) > 0 {
-		v["search"] = []string{alo.Search}
-	}
-	if len(alo.ActivityTypeKey) > 0 {
-		v["activityType"] = []string{alo.ActivityTypeKey}
-		v["excludeChildren"] = []string{"false"} // not sure what this does but the web client does it
-	}
-	return v
 }
 
 type ActivityDetails struct {

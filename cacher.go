@@ -82,7 +82,7 @@ type FileTokenCacher struct {
 }
 
 func (ftc *FileTokenCacher) SaveAccessToken(at *AccessToken) error {
-	if err := ftc.save(fmt.Sprintf("%saccess_token.json", ftc.Prefix), at); err != nil {
+	if err := ftc.save(ftc.Prefix + "access_token.json", at); err != nil {
 		return err
 	}
 	return ftc.mem.SaveAccessToken(at)
@@ -93,14 +93,14 @@ func (ftc *FileTokenCacher) GetAccessToken() (*AccessToken, error) {
 	if t, err := ftc.mem.GetAccessToken(); err == nil && t != nil {
 		return t, nil
 	}
-	if err := ftc.get(fmt.Sprintf("%saccess_token.json", ftc.Prefix), &at); err != nil {
+	if err := ftc.get(ftc.Prefix + "access_token.json", &at); err != nil {
 		return &at, err
 	}
 	return &at, ftc.mem.SaveAccessToken(&at)
 }
 
 func (ftc *FileTokenCacher) SaveOAuth1Token(token *OAuth1Token) error {
-	if err := ftc.save(fmt.Sprintf("%soauth1_token.json", ftc.Prefix), token); err != nil {
+	if err := ftc.save(ftc.Prefix + "oauth1_token.json", token); err != nil {
 		return err
 	}
 	return ftc.mem.SaveOAuth1Token(token)
@@ -111,7 +111,7 @@ func (ftc *FileTokenCacher) GetOAuth1Token() (*OAuth1Token, error) {
 	if t, err := ftc.mem.GetOAuth1Token(); err == nil && t != nil {
 		return t, nil
 	}
-	if err := ftc.get(fmt.Sprintf("%soauth1_token.json", ftc.Prefix), &token); err != nil {
+	if err := ftc.get(ftc.Prefix + "oauth1_token.json", &token); err != nil {
 		return &token, err
 	}
 	return &token, ftc.mem.SaveOAuth1Token(&token)

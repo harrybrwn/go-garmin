@@ -228,21 +228,8 @@ func (c *Client) api(out any, method, path string, params url.Values, payload an
 	return res.StatusCode, err
 }
 
-func call[T any](c *Client, method, path string, params url.Values, payload any) (*T, int, error) {
-	var out T
-	status, err := c.api(&out, method, path, params, payload)
-	return &out, status, err
-}
-
 func (c *Client) prependTransport(rt rt.RoundTripper) {
 	c.http.Transport = rt.Wrap(c.http.Transport)
-}
-
-func newDefaultHttpClient() http.Client {
-	uat := rt.NewUserAgent(UserAgent)
-	return http.Client{
-		Transport: uat.Wrap(http.DefaultTransport),
-	}
 }
 
 type URLBuilder struct {

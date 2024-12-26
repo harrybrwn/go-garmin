@@ -339,20 +339,6 @@ type RaceSearchRequest struct {
 	SearchPhrase     *string
 }
 
-func (r *RaceSearchRequest) params() url.Values {
-	v := make(url.Values)
-	if r.Latitude != nil {
-		v.Set("poiLat", strconv.FormatFloat(*r.Latitude, 'f', 5, 64))
-	}
-	if r.Longitude != nil {
-		v.Set("poiLon", strconv.FormatFloat(*r.Longitude, 'f', 5, 64))
-	}
-	if r.WithinMeters != nil {
-		v.Set("withinMeters", strconv.FormatInt(int64(*r.WithinMeters), 10))
-	}
-	return v
-}
-
 type RaceSearchResult struct {
 	Provider          string `json:"provider"`
 	EventRef          string `json:"eventRef"`

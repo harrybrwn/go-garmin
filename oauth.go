@@ -328,55 +328,9 @@ func exchange(client *Client, conf *oauth1.Config, token *oauth1.Token) (*Access
 	return &at, nil
 }
 
-// apiRefresh is supposed to use the refresh token to get a new access token but
-// its not working.
-func apiRefresh(client *Client, token *AccessToken) (*AccessToken, error) {
-	payload, err := json.Marshal(map[string]string{
-		"refresh_token": token.RefreshToken,
-	})
-	if err != nil {
-		return nil, err
-	}
-	req := http.Request{
-		Method: "POST",
-		URL: new(URLBuilder).
-			HTTPS().
-			Host("connect", client.Domain). // TODO try this with connectapi
-			Path("/services/auth/token/refresh").
-			URL(),
-		Header: make(http.Header),
-		Body:   io.NopCloser(bytes.NewReader(payload)),
-	}
-	res, err := client.Do(&req)
-	if err != nil {
-		return nil, err
-	}
-	now := client.Clock.Now()
-	defer res.Body.Close()
-	if res.StatusCode != http.StatusCreated {
-		return nil, errors.New(fmt.Sprintf("bad status code %q, wanted 201", res.Status))
-	}
-	var at AccessToken
-	if err = at.marshal(res.Body, now); err != nil {
-		return nil, err
-	}
-	return &at, nil
-}
-
 type Refresher interface {
 	Refresh(*AccessToken) (*AccessToken, error)
 }
-
-func newAccessTokenInjector(at *AccessToken, refresher Refresher) *accessTokenInjector {
-	if refresher == nil {
-		refresher = new(noopRefresher)
-	}
-	return &accessTokenInjector{AccessToken: at, refresher: refresher}
-}
-
-type noopRefresher struct{}
-
-func (npr *noopRefresher) Refresh(at *AccessToken) (*AccessToken, error) { return at, nil }
 
 type accessTokenInjector struct {
 	AccessToken *AccessToken
@@ -432,12 +386,6 @@ func (otr *oauth1TokenRefresher) Refresh(*AccessToken) (*AccessToken, error) {
 		}
 	}
 	return accessToken, nil
-}
-
-type oauth1Token struct {
-	Token    string
-	Secret   string
-	MFAToken string
 }
 
 var (

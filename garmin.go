@@ -64,7 +64,6 @@ func (uts *UnixTS) UnmarshalText(b []byte) error {
 	if err != nil {
 		return err
 	}
-	time.Now().Date()
 	*uts = UnixTS(time.UnixMilli(i))
 	return nil
 }
