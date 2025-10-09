@@ -3,7 +3,6 @@ package garmin
 import (
 	"fmt"
 	"net/url"
-	"path/filepath"
 	"time"
 )
 
@@ -23,13 +22,11 @@ type StressStat struct {
 }
 
 func datepath(base string, a, b time.Time) string {
-	return filepath.Join(
+	return fmt.Sprintf(
+		"%s/%s/%s",
 		base,
-		fmt.Sprintf(
-			"/%s/%s",
-			a.Format(time.DateOnly),
-			b.Format(time.DateOnly),
-		),
+		a.Format(time.DateOnly),
+		b.Format(time.DateOnly),
 	)
 }
 
