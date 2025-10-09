@@ -129,6 +129,8 @@ type ActivitySummaryDTO struct {
 	MaxPower                       float64 `json:"maxPower"`
 	MinPower                       float64 `json:"minPower"`
 	NormalizedPower                float64 `json:"normalizedPower"`
+	LeftBalance                    float64 `json:"leftBalance"`
+	RightBalance                   float64 `json:"rightBalance"`
 	TotalWork                      float64 `json:"totalWork"`
 	GroundContactTime              float64 `json:"groundContactTime"`
 	StrideLength                   float64 `json:"strideLength"`

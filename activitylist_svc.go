@@ -58,6 +58,7 @@ type ListedActivity struct {
 	AvgVerticalOscillation  float64 `json:"avgVerticalOscillation"`
 	AvgGroundContactTime    float64 `json:"avgGroundContactTime"`
 	AvgStrideLength         float64 `json:"avgStrideLength"`
+	AvgLeftBalance          float64 `json:"avgLeftBalance"`
 	VO2MaxValue             float64 `json:"vO2MaxValue"`
 	AvgVerticalRatio        float64 `json:"avgVerticalRatio"`
 	DeviceID                int64   `json:"deviceId"`
