@@ -7,7 +7,6 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
-	"net/url"
 	"os"
 	"strings"
 	"testing"
@@ -192,28 +191,6 @@ func TestDates(t *testing.T) {
 	fmt.Println(now.In(time.UTC).Format(dateFormat))
 }
 
-func formatEndDate(d time.Time) string {
-	return d.Format(time.DateOnly)
-}
-
-func mergeValues(dst, src url.Values) url.Values {
-	for k, v := range src {
-		val := make([]string, len(v))
-		copy(val, v)
-		if _, ok := dst[k]; !ok {
-			dst[k] = val
-		}
-	}
-	return dst
-}
-
-func must[T any](v T, err error) T {
-	if err != nil {
-		panic(err)
-	}
-	return v
-}
-
 func loadEnv(name string) {
 	f, err := os.Open(name)
 	if os.IsNotExist(err) {
@@ -254,24 +231,6 @@ type garminClaims struct {
 	FGP                   string   `json:"fgp"`
 }
 
-func unmarshalClaims(c *garminClaims, token string) error {
-	segments := strings.Split(token, ".")
-	if len(segments) < 3 {
-		return errors.New("invalid jwt token")
-	}
-	seg := segments[1]
-
-	if l := len(seg) % 4; l > 0 {
-		seg += strings.Repeat("=", 4-l)
-	}
-
-	b, err := base64.URLEncoding.DecodeString(seg)
-	if err != nil {
-		return err
-	}
-	return json.Unmarshal(b, c)
-}
-
 // fields are in a fixed order
 type refreshToken struct {
 	RefreshTokenValue string `json:"refreshTokenValue"`
@@ -293,10 +252,6 @@ func b64(m any, enc *base64.Encoding) string {
 
 func b64strip(m any, enc *base64.Encoding) string {
 	return strings.TrimRight(b64(m, enc), "=")
-}
-
-func unb64(s string) string {
-	return s
 }
 
 type refresherFunc func(*AccessToken) (*AccessToken, error)
